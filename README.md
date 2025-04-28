@@ -42,6 +42,39 @@ While working on this project, I encountered an issue where the **FRDM-K64F** bo
 
 ---
 
+## ESP32 PlatformIO USB Connection Issue
+
+While working on the **ESP32** platform using **PlatformIO**, I encountered an issue where the USB port used for uploading or monitoring sometimes became **busy** and the ESP32 could not connect. In such cases, you may need to manually release the port to allow the upload or monitoring to resume.
+
+### Problem:
+Sometimes, the **ESP32** fails to connect to the USB port because the port is reported as "busy." This can prevent uploading or serial monitoring from working properly.
+
+### Solution:
+1. Identify the process that is using the **USB port** by running the following command:
+
+    ```bash
+    sudo lsof /dev/ttyUSB0
+    ```
+
+2. This will show you the **process ID (PID)** of the program using the USB port. Once you have the PID, you can kill the process by running:
+
+    ```bash
+    sudo kill <process_number>
+    ```
+
+    Replace `<process_number>` with the actual process ID (PID) from the previous command.
+
+3. After killing the process, you should be able to resume the upload and monitoring process by running the normal **PlatformIO** upload or monitor command:
+
+    ```bash
+    pio run --target upload
+    pio device monitor
+    ```
+
+4. The ESP32 should now be able to connect to the USB port, and you can continue with your work.
+
+---
+
 ### Example Flow
 Here’s how the interaction would look like during normal operation:
 
@@ -62,4 +95,6 @@ Here’s how the interaction would look like during normal operation:
 ### Conclusion
 This project demonstrates the use of I2C communication between two microcontrollers (ESP32 and FRDM-K64F), where one (ESP32) acts as the master, sending commands to the slave (FRDM-K64F). The slave processes the commands, controls hardware (LEDs), and responds with a confirmation. This system can be extended to control more hardware components or handle more complex commands in future implementations.
 
-Additionally, the challenge of the FRDM-K64F repeatedly entering bootloader mode was resolved by copying a firmware file and restarting the board, ensuring that the communication could proceed without further issues.
+Additionally, the challenge of the **FRDM-K64F** repeatedly entering bootloader mode was resolved by copying a firmware file and restarting the board, ensuring that the communication could proceed without further issues.
+
+Finally, the **ESP32 USB connection issue** was resolved by killing the process that was using the USB port, allowing the upload and monitoring to continue smoothly.
